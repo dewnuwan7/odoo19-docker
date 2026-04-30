@@ -39,7 +39,7 @@
        data_dir = /path/to/nfs/directory
     """,
 
-    'author': "Roshan",
+    'author': "Yushan Jayaweera",
 
     'category': 'Technical Settings',
     'version': '19.0.1.0',
