@@ -1,0 +1,46 @@
+services:
+  odoo:
+    image: odoo:19.0
+    container_name: odoo
+    depends_on:
+      - db
+      - redis
+    ports:
+      - "8069:8069"
+      - "8072:8072"
+    volumes:
+      - odoo-data:/var/lib/odoo
+      - ./odoo.conf:/etc/odoo/odoo.conf
+      - ./custom_addons:/mnt/extra-addons
+    environment:
+      - HOST=db
+      - USER=odoo
+      - PASSWORD=odoo
+    command: >
+      odoo
+      --load=web,open_redis_ormcache_19
+
+  db:
+    image: postgres:16
+    container_name: odoo-db
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=odoo
+      - POSTGRES_PASSWORD=odoo
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    volumes:
+      - db-data:/var/lib/postgresql/data/pgdata
+
+  redis:
+    image: redis:7-alpine
+    container_name: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    command: redis-server --appendonly yes  # Persistence
+
+volumes:
+   odoo-data:
+   db-data:
+   redis-data:
